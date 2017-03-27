@@ -6,11 +6,19 @@ open NReco.CF.Taste.Impl.Common
 open NReco.CF.Taste.Impl.Recommender
 open NReco.CF.Taste.Impl.Similarity
 open NReco.CF.Taste.Impl.Neighborhood
+open System.Configuration
+open FSharp.Configuration
+
+type Settings = AppSettings<"App.config">
+
 type RecommendationService() =
     let _recommender =
         let model = (DataProvider()).GetModelData()
         let similarity = LogLikelihoodSimilarity(model)
-        let neighborhood = CachingUserNeighborhood(NearestNUserNeighborhood(100, 0.1, similarity, model), model)
+        let neighborhood =
+            (Settings.NeighborhoodLimit, Settings.NeighborhoodTreshold, similarity, model)
+            |> NearestNUserNeighborhood
+            |> fun x -> CachingUserNeighborhood(x, model)
         GenericBooleanPrefUserBasedRecommender(model, neighborhood, similarity)
 
     member this.Recommend(userId, limit) =
