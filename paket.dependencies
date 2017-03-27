@@ -1,0 +1,10 @@
+source https://www.nuget.org/api/v2
+nuget FAKE
+nuget FSharp.Core
+nuget Nancy.Hosting.Self
+nuget NReco.Recommender
+nuget FSharp.Data
+nuget FSharp.Configuration
+nuget SQLProvider
+nuget FSharp.Data.TypeProviders
+nuget Newtonsoft.Json

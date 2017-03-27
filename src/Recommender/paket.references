@@ -1,0 +1,8 @@
+FSharp.Core
+Nancy.Hosting.Self
+SQLProvider
+FSharp.Data.TypeProviders
+Newtonsoft.Json
+FSharp.Data
+FSharp.Configuration
+NReco.Recommender
