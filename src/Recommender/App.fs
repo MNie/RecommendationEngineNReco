@@ -9,6 +9,6 @@ namespace Recommender
             let _recommender = RecommendationService()
             this.Get.["/"] <- fun _ -> "Hello World!" :> obj
             this.Get.["/Recommend/{userId}/{limit}"] <- fun parameters ->
-                let userId = (parameters :?> Nancy.DynamicDictionary).["userId"]
-                let limit = (parameters :?> Nancy.DynamicDictionary).["limit"]
+                let userId = (parameters :?> Nancy.DynamicDictionary).["userId"] :?> int64
+                let limit = (parameters :?> Nancy.DynamicDictionary).["limit"] :?> int
                 this.Response.AsJson(_recommender.Recommend(userId, limit)) :> obj

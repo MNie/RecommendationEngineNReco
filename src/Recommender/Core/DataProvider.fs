@@ -1,7 +1,5 @@
 namespace Recommender.Core
-
     open FSharp.Data.TypeProviders
-    open Newtonsoft.Json
     open NReco.CF.Taste.Model
     open NReco.CF.Taste.Common
     open NReco.CF.Taste.Impl.Common
@@ -14,11 +12,14 @@ namespace Recommender.Core
             let db = dbSchema.GetDataContext()
             let dataFromDb =
                 query {
-                    for row in db.DataModelView do
+                    for row in db.Recommender_DataModelView_New do
                     select row
                 }
-                |> Seq.groupBy (fun row -> row.user_id)
+                |> Seq.groupBy (fun row -> row.User_id)
             let data = new FastByIDMap<FastIDSet>(dataFromDb |> Seq.length)
             dataFromDb
-            |> Seq.iter (fun x -> data.Put(x.Key, new FastIDSet(x.Values)))
+            |> Seq.iter (fun (key, values) ->
+                    let value = values |> Seq.map (fun x -> x.Item_id) |> Seq.toArray |> (fun x -> FastIDSet(x))
+                    data.Put(key, value) |> ignore
+                )
             GenericBooleanPrefDataModel(data)
