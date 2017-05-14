@@ -5,10 +5,12 @@ namespace Recommender
     open Recommender.Core
     type App() as this =
         inherit NancyModule()
+        let _recommender = RecommendationService()
+        let (?) (parameters: obj) param =
+                (parameters :?> Nancy.DynamicDictionary).[param].ToString()
         do
-            let _recommender = RecommendationService()
-            this.Get.["/"] <- fun _ -> "Hello World!" :> obj
             this.Get.["/Recommend/{userId}/{limit}"] <- fun parameters ->
-                let userId = (parameters :?> Nancy.DynamicDictionary).["userId"] :?> int64
-                let limit = (parameters :?> Nancy.DynamicDictionary).["limit"] :?> int
+                System.Console.WriteLine(sprintf "%A, %A" parameters?userId parameters?limit)
+                let userId = parameters?userId |> int64
+                let limit = parameters?limit |> int
                 this.Response.AsJson(_recommender.Recommend(userId, limit)) :> obj
